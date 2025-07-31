@@ -57,7 +57,6 @@ app.get('/', (req, res) => {
   });
 });
 
-
 // Auth routes (sign in / sign up / sign out)
 app.use('/auth', authController);
 
