@@ -15,7 +15,7 @@ const passUserToView = require('./middleware/pass-user-to-view.js');
 // =================== Controllers ===================
 
 const authController = require('./controllers/auth.js');
-const restaurantController = require('./controllers/restaurant.js');
+const restaurantController = require('./controllers/restaurants.js');
 const usersController = require('./controllers/users.js');
 
 // =================== App Config ===================
@@ -62,7 +62,7 @@ app.use('/auth', authController);
 
 // Pantry routes — only for signed-in users
 app.use(isSignedIn); // protect everything below this
-app.use('/users/:userId/restaurant', restaurantControllerController);
+app.use('/users/:userId/restaurant', restaurantController);
 
 // =================== Start Server ===================
 

@@ -1,22 +1,14 @@
 const mongoose = require('mongoose');
+const restaurantSchema = require('./restaurant');
 
-const foodSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-  },
-});
 
 const userSchema = new mongoose.Schema({
-  username: {
-    type: String,
-    required: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  restaurant: [restaurantSchema], // Embedded array
+  username: String,
+  email: String,
+  password: String,
+  restaurant: [restaurantSchema],
 });
 
-module.exports = mongoose.model('User', userSchema);
+const User = mongoose.model('User', userSchema);
+
+module.exports = User;
