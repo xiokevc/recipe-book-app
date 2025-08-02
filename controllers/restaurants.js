@@ -5,8 +5,9 @@ const User = require('../models/user');
 
 // INDEX
 router.get('/', async (req, res) => {
-  const user = await User.findById(req.params.userId);
-  res.render('restaurants/index', { restaurants: user.restaurants });
+  const userId = req.params.userId;
+  // Fetch restaurants for the user
+  res.render('restaurants/index', { user: req.session.user });
 });
 
 // NEW

@@ -64,7 +64,8 @@ app.use('/users', usersController); // e.g., /users/:id
 
 // Protected Routes (require login)
 app.use(isSignedIn); // Applies below this line
-app.use('/users/:userId/restaurant', restaurantController);
+app.use('/users', restaurantController);
+
 
 // =================== Start Server ===================
 app.listen(port, () => {
