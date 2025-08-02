@@ -5,21 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Your Restaurant Reviews</title>
   <style>
-    :root {
-      --bg: #fff;
-      --text: #333;
-      --accent: #e07a5f;
-      --max: 1200px;
-      --badge-bg: #eee;
-      --badge-vg: #e94e1b;
-      --badge-gf: #f7c59f;
-      --badge-df: #276749;
-      --badge-ns: #111;
-      --badge-text: #fff;
-      --badge-radius: 50%;
-      --badge-size: 24px;
-      --font-sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    }
+    /* Replaced all variables with hardcoded values */
 
     * {
       margin: 0;
@@ -28,20 +14,20 @@
     }
 
     body {
-      font-family: var(--font-sans);
-      color: var(--text);
-      background: var(--bg);
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      color: #333;
+      background: #fff;
       line-height: 1.6;
       padding: 0 1rem;
     }
 
     a {
-      color: var(--accent);
+      color: #e07a5f;
       text-decoration: none;
     }
 
     .site-header {
-      max-width: var(--max);
+      max-width: 1200px;
       margin: 2rem auto;
       display: flex;
       justify-content: space-between;
@@ -54,7 +40,7 @@
       font-weight: bold;
       transform: skew(-10deg);
       letter-spacing: 1px;
-      color: var(--text);
+      color: #333;
     }
 
     nav ul {
@@ -68,7 +54,7 @@
     }
 
     nav a:hover {
-      color: var(--accent);
+      color: #e07a5f;
     }
 
     .hero {
@@ -86,7 +72,7 @@
       display: inline-block;
       margin-top: 1rem;
       padding: 0.5rem 1rem;
-      background: var(--accent);
+      background: #e07a5f;
       color: white;
       border-radius: 4px;
       font-weight: 700;
@@ -94,6 +80,7 @@
       font-size: 0.9rem;
       letter-spacing: 1.5px;
       transition: background 0.3s ease;
+      cursor: pointer;
     }
 
     .btn:hover {
@@ -101,13 +88,13 @@
     }
 
     .add-new {
-      max-width: var(--max);
+      max-width: 1200px;
       margin: 2rem auto;
       text-align: center;
     }
 
     main#restaurants {
-      max-width: var(--max);
+      max-width: 1200px;
       margin: 0 auto 4rem;
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -136,33 +123,6 @@
       object-fit: cover;
     }
 
-    .recipe-card .badges {
-      margin: 0.75rem 1rem 0 1rem;
-      display: flex;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-    }
-
-    .badge {
-      width: var(--badge-size);
-      height: var(--badge-size);
-      border-radius: var(--badge-radius);
-      color: var(--badge-text);
-      font-weight: bold;
-      font-size: 0.75rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-transform: uppercase;
-      cursor: default;
-    }
-
-    .badge.gf { background: var(--badge-gf); }
-    .badge.vg { background: var(--badge-vg); }
-    .badge.v { background: #f16725; } /* vegetarian */
-    .badge.df { background: var(--badge-df); }
-    .badge.ns { background: var(--badge-ns); }
-
     .recipe-card h3 {
       margin: 0.75rem 1rem 0.5rem 1rem;
       font-size: 1.2rem;
@@ -186,7 +146,7 @@
     }
 
     .actions a {
-      color: var(--accent);
+      color: #e07a5f;
     }
 
     .actions form button {
@@ -201,51 +161,14 @@
       letter-spacing: 1px;
     }
 
-    .subscribe {
-      max-width: var(--max);
-      margin: 0 auto 4rem;
-      padding: 3rem 1rem;
-      background: #f9f2f0;
-      text-align: center;
-      font-weight: 600;
-      letter-spacing: 1px;
-      color: var(--accent);
-      border-radius: 8px;
-    }
-
-    .subscribe input[type="email"] {
-      padding: 0.5rem 1rem;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      margin-right: 0.5rem;
-      font-size: 1rem;
-      width: 250px;
-      max-width: 100%;
-    }
-
-    .subscribe button {
-      padding: 0.5rem 1.25rem;
-      background: var(--accent);
-      color: white;
-      border: none;
-      border-radius: 4px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-
-    .subscribe button:hover {
-      background: #c05d4b;
-    }
-
     .site-footer {
       text-align: center;
       padding: 2rem 1rem;
       font-size: 0.9rem;
-      border-top: 1px solid #ddd;
-      max-width: var(--max);
+      max-width: 1200px;
       margin: 0 auto 2rem;
       color: #666;
+      border-top: none; /* removed border line */
     }
 
   </style>
@@ -288,13 +211,6 @@
             alt="<%= restaurant.name %>" 
             loading="lazy"
           >
-          <div class="badges">
-            <% if (restaurant.glutenFree) { %><div class="badge gf" title="Gluten Free">GF</div><% } %>
-            <% if (restaurant.vegan) { %><div class="badge vg" title="Vegan">VG</div><% } %>
-            <% if (restaurant.vegetarian) { %><div class="badge v" title="Vegetarian">V</div><% } %>
-            <% if (restaurant.dairyFree) { %><div class="badge df" title="Dairy Free">DF</div><% } %>
-            <% if (restaurant.nutSensitive) { %><div class="badge ns" title="Nut Sensitive">NS</div><% } %>
-          </div>
           <h3><%= restaurant.name %></h3>
           <p><strong>Cuisine:</strong> <%= restaurant.cuisine || 'N/A' %></p>
           <p><strong>Rating:</strong> <%= restaurant.rating || 'N/A' %> / 5</p>
@@ -313,20 +229,10 @@
     <% } %>
   </main>
 
-  <section class="subscribe">
-    <h3>Get Notified About New Features</h3>
-    <form action="#" method="POST">
-      <input type="email" placeholder="Your email" required />
-      <button type="submit">Subscribe</button>
-    </form>
-  </section>
-
-  <footer class="site-footer">
-    <p>&copy; 2025 Restaurant Review App</p>
-  </footer>
-
 </body>
 </html>
+
+
 
 
 

@@ -2,18 +2,15 @@ const express = require('express');
 const router = express.Router({ mergeParams: true });
 const User = require('../models/user');
 
-// Middleware to check if logged-in user matches route userId
+// Middleware: Verify user session matches URL param
 function verifyUserAccess(req, res, next) {
-  if (
-    req.session.user &&
-    String(req.session.user._id) === String(req.params.userId)
-  ) {
+  if (req.session.user && req.session.user._id.toString() === req.params.userId) {
     return next();
   }
-  return res.status(403).send('Unauthorized access.');
+  return res.status(403).send('Unauthorized');
 }
 
-// INDEX - Show all restaurants for the logged-in user
+// INDEX: List all restaurants for user
 router.get('/', verifyUserAccess, async (req, res) => {
   try {
     const user = await User.findById(req.params.userId);
@@ -21,16 +18,16 @@ router.get('/', verifyUserAccess, async (req, res) => {
 
     res.render('restaurants/index', {
       userId: req.params.userId,
-      restaurants: user.restaurants || [],
+      restaurants: user.restaurants,
       user: req.session.user,
     });
   } catch (err) {
-    console.error('Error fetching restaurants:', err);
+    console.error(err);
     res.status(500).send('Server error');
   }
 });
 
-// NEW - Show form to create a new restaurant
+// NEW: Show form for new restaurant
 router.get('/new', verifyUserAccess, (req, res) => {
   res.render('restaurants/new', {
     userId: req.params.userId,
@@ -38,49 +35,31 @@ router.get('/new', verifyUserAccess, (req, res) => {
   });
 });
 
-// CREATE - Add a new restaurant to user
+// CREATE: Add new restaurant
 router.post('/', verifyUserAccess, async (req, res) => {
   try {
     const user = await User.findById(req.params.userId);
     if (!user) return res.status(404).send('User not found');
 
-    // Destructure and normalize checkbox booleans
-    const {
-      name,
-      location,
-      cuisine,
-      review,
-      rating,
-      glutenFree,
-      vegan,
-      vegetarian,
-      dairyFree,
-      nutSensitive,
-    } = req.body;
+    if (!Array.isArray(user.restaurants)) user.restaurants = [];
 
+    const { name, cuisine, rating, review } = req.body;
     user.restaurants.push({
       name,
-      location,
       cuisine,
+      rating: Number(rating),
       review,
-      rating: rating ? Number(rating) : undefined,
-      glutenFree: glutenFree === 'on',
-      vegan: vegan === 'on',
-      vegetarian: vegetarian === 'on',
-      dairyFree: dairyFree === 'on',
-      nutSensitive: nutSensitive === 'on',
     });
 
     await user.save();
-
-    res.redirect(`/users/${user._id}/restaurants`);
+    res.redirect(`/users/${user._id}/restaurant`);
   } catch (err) {
-    console.error('Error creating restaurant:', err);
+    console.error(err);
     res.status(500).send('Server error');
   }
 });
 
-// SHOW - Show a specific restaurant details
+// SHOW: Show one restaurant details
 router.get('/:restaurantId', verifyUserAccess, async (req, res) => {
   try {
     const user = await User.findById(req.params.userId);
@@ -95,12 +74,12 @@ router.get('/:restaurantId', verifyUserAccess, async (req, res) => {
       user: req.session.user,
     });
   } catch (err) {
-    console.error('Error fetching restaurant:', err);
+    console.error(err);
     res.status(500).send('Server error');
   }
 });
 
-// EDIT - Show form to edit a restaurant
+// EDIT: Show form to edit restaurant
 router.get('/:restaurantId/edit', verifyUserAccess, async (req, res) => {
   try {
     const user = await User.findById(req.params.userId);
@@ -115,12 +94,12 @@ router.get('/:restaurantId/edit', verifyUserAccess, async (req, res) => {
       user: req.session.user,
     });
   } catch (err) {
-    console.error('Error fetching restaurant for edit:', err);
+    console.error(err);
     res.status(500).send('Server error');
   }
 });
 
-// UPDATE - Update restaurant info
+// UPDATE: Update restaurant info
 router.put('/:restaurantId', verifyUserAccess, async (req, res) => {
   try {
     const user = await User.findById(req.params.userId);
@@ -129,55 +108,38 @@ router.put('/:restaurantId', verifyUserAccess, async (req, res) => {
     const restaurant = user.restaurants.id(req.params.restaurantId);
     if (!restaurant) return res.status(404).send('Restaurant not found');
 
-    // Destructure and normalize checkbox booleans
-    const {
-      name,
-      location,
-      cuisine,
-      review,
-      rating,
-      glutenFree,
-      vegan,
-      vegetarian,
-      dairyFree,
-      nutSensitive,
-    } = req.body;
-
+    const { name, cuisine, rating, review } = req.body;
     restaurant.set({
       name,
-      location,
       cuisine,
+      rating: Number(rating),
       review,
-      rating: rating ? Number(rating) : undefined,
-      glutenFree: glutenFree === 'on',
-      vegan: vegan === 'on',
-      vegetarian: vegetarian === 'on',
-      dairyFree: dairyFree === 'on',
-      nutSensitive: nutSensitive === 'on',
     });
 
     await user.save();
-
-    res.redirect(`/users/${user._id}/restaurants`);
+    res.redirect(`/users/${user._id}/restaurant`);
   } catch (err) {
-    console.error('Error updating restaurant:', err);
+    console.error(err);
     res.status(500).send('Server error');
   }
 });
 
-// DELETE - Delete a restaurant
+// DELETE: Remove restaurant
 router.delete('/:restaurantId', verifyUserAccess, async (req, res) => {
   try {
     const user = await User.findById(req.params.userId);
     if (!user) return res.status(404).send('User not found');
 
-    const restaurant = user.restaurants.id(req.params.restaurantId);
+    // Check if restaurant exists
+    const restaurant = user.restaurants.find(r => r._id.toString() === req.params.restaurantId);
     if (!restaurant) return res.status(404).send('Restaurant not found');
 
-    restaurant.remove();
+    // Remove restaurant by filtering
+    user.restaurants = user.restaurants.filter(r => r._id.toString() !== req.params.restaurantId);
+
     await user.save();
 
-    res.redirect(`/users/${user._id}/restaurants`);
+    res.redirect(`/users/${user._id}/restaurant`);
   } catch (err) {
     console.error('Error deleting restaurant:', err);
     res.status(500).send('Server error');
@@ -185,6 +147,8 @@ router.delete('/:restaurantId', verifyUserAccess, async (req, res) => {
 });
 
 module.exports = router;
+
+
 
 
 
