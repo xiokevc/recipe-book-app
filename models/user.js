@@ -1,14 +1,11 @@
 const mongoose = require('mongoose');
-const restaurantSchema = require('./restaurant');
+const Schema = mongoose.Schema;
 
+const userSchema = new Schema({
+  username: { type: String, required: true, unique: true },
+  email:    { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  // optional: store user ratings or favorites
+}, { timestamps: true });
 
-const userSchema = new mongoose.Schema({
-  username: String,
-  email: String,
-  password: String,
-  restaurant: [restaurantSchema],
-});
-
-const User = mongoose.model('User', userSchema);
-
-module.exports = User;
+module.exports = mongoose.model('User', userSchema);

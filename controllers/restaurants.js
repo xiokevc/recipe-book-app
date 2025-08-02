@@ -1,81 +1,59 @@
+// controllers/restaurants.js
 const express = require('express');
-const router = express.Router();
-const Restaurant = require('../models/restaurant');
+const router = express.Router({ mergeParams: true });
+const User = require('../models/user');
 
-// INDEX - list all restaurants
+// INDEX
 router.get('/', async (req, res) => {
-  try {
-    const restaurants = await Restaurant.find({});
-    res.render('restaurants/index.ejs', { restaurants });
-  } catch (err) {
-    console.error(err);
-    res.redirect('/');
-  }
+  const user = await User.findById(req.params.userId);
+  res.render('restaurants/index', { restaurants: user.restaurants });
 });
 
-// NEW - form to add a restaurant
+// NEW
 router.get('/new', (req, res) => {
-  res.render('restaurants/new.ejs');
+  res.render('restaurants/new', { userId: req.params.userId });
 });
 
-// CREATE - add restaurant
+// CREATE
 router.post('/', async (req, res) => {
-  try {
-    const newRestaurant = new Restaurant({
-      name: req.body.name,
-      location: req.body.location,
-      cuisine: req.body.cuisine
-    });
-    await newRestaurant.save();
-    res.redirect('/restaurants');
-  } catch (err) {
-    console.error(err);
-    res.redirect('/');
-  }
+  const user = await User.findById(req.params.userId);
+  user.restaurants.push(req.body);
+  await user.save();
+  res.redirect(`/users/${user._id}/restaurant`);
 });
 
-// EDIT - form to edit restaurant
-router.get('/:id/edit', async (req, res) => {
-  try {
-    const restaurant = await Restaurant.findById(req.params.id);
-    if (!restaurant) return res.status(404).send("Restaurant not found");
-    res.render('restaurants/edit.ejs', { restaurant });
-  } catch (err) {
-    console.error(err);
-    res.redirect('/');
-  }
+// SHOW
+router.get('/:restaurantId', async (req, res) => {
+  const user = await User.findById(req.params.userId);
+  const restaurant = user.restaurants.id(req.params.restaurantId);
+  res.render('restaurants/show', { restaurant, userId: req.params.userId });
 });
 
-// UPDATE - modify restaurant
-router.put('/:id', async (req, res) => {
-  try {
-    const updated = await Restaurant.findByIdAndUpdate(
-      req.params.id,
-      {
-        name: req.body.name,
-        location: req.body.location,
-        cuisine: req.body.cuisine
-      },
-      { new: true }
-    );
-    res.redirect('/restaurants');
-  } catch (err) {
-    console.error(err);
-    res.redirect('/');
-  }
+// EDIT
+router.get('/:restaurantId/edit', async (req, res) => {
+  const user = await User.findById(req.params.userId);
+  const restaurant = user.restaurants.id(req.params.restaurantId);
+  res.render('restaurants/edit', { restaurant, userId: req.params.userId });
 });
 
-// DELETE - remove restaurant
-router.delete('/:id', async (req, res) => {
-  try {
-    await Restaurant.findByIdAndDelete(req.params.id);
-    res.redirect('/restaurants');
-  } catch (err) {
-    console.error(err);
-    res.redirect('/');
-  }
+// UPDATE
+router.put('/:restaurantId', async (req, res) => {
+  const user = await User.findById(req.params.userId);
+  const restaurant = user.restaurants.id(req.params.restaurantId);
+  restaurant.set(req.body);
+  await user.save();
+  res.redirect(`/users/${user._id}/restaurant`);
+});
+
+// DELETE
+router.delete('/:restaurantId', async (req, res) => {
+  const user = await User.findById(req.params.userId);
+  user.restaurants.id(req.params.restaurantId).remove();
+  await user.save();
+  res.redirect(`/users/${user._id}/restaurant`);
 });
 
 module.exports = router;
+
 
 
