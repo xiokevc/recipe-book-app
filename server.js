@@ -59,15 +59,19 @@ app.get('/', (req, res) => {
 });
 
 // Public Routes
-app.use('/auth', authController);   // ✅ Handles /auth/sign-in and /auth/sign-up
-app.use('/users', usersController); // e.g., /users/:id
+app.use('/auth', authController);   // Handles sign-in and sign-up
+app.use('/users', usersController); // Handles user profiles or settings
 
-// Protected Routes (require login)
-app.use(isSignedIn); // Applies below this line
-app.use('/users', restaurantController);
+// Protected Routes (requires login)
+app.use('/users/:userId/restaurant', isSignedIn, restaurantController); // ✅ Fix here
 
+// Catch-all 404
+app.use((req, res) => {
+  res.status(404).send('Page not found');
+});
 
 // =================== Start Server ===================
 app.listen(port, () => {
   console.log(`🚀 Server is running on http://localhost:${port}`);
 });
+

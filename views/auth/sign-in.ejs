@@ -130,11 +130,9 @@
     <div class="login-container">
       <img src="/assets/forkit.png" alt="Logo" class="logo" />
       <h1>Fork it</h1>
-
-      <% if (typeof errorMessage !== 'undefined' && errorMessage) { %>
+      <% if (errorMessage) { %>
         <div class="error-message"><%= errorMessage %></div>
       <% } %>
-
       <form class="login-form" action="/auth/sign-in" method="POST">
         <input type="email" name="email" placeholder="Email" required />
         <input type="password" name="password" placeholder="Password" required />
