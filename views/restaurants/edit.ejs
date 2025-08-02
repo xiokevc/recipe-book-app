@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Edit Restaurant Review</title>
+</head>
+<body>
+  <h1>Edit <%= restaurant.name %></h1>
+  <%- include('_form', {
+    formAction: `/users/${userId}/restaurant/${restaurant._id}?_method=PUT`,
+    formMethod: 'PUT',
+    restaurant: restaurant,
+    buttonLabel: 'Update'
+  }) %>
+  <a href="/users/<%= userId %>/restaurant">← Back to All Restaurants</a>
+</body>
+</html>

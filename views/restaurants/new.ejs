@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>New Restaurant Review</title>
+</head>
+<body>
+  <h1>Add a New Restaurant</h1>
+  <%- include('_form', {
+    formAction: `/users/${userId}/restaurant`,
+    formMethod: 'POST',
+    restaurant: null,
+    buttonLabel: 'Create'
+  }) %>
+  <a href="/users/<%= userId %>/restaurant">← Back to All Restaurants</a>
+</body>
+</html>

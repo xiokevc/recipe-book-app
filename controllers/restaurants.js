@@ -4,7 +4,10 @@ const User = require('../models/user');
 
 // Middleware to check if logged-in user matches route userId
 function verifyUserAccess(req, res, next) {
-  if (req.session.user && req.session.user._id === req.params.userId) {
+  if (
+    req.session.user &&
+    String(req.session.user._id) === String(req.params.userId)
+  ) {
     return next();
   }
   return res.status(403).send('Unauthorized access.');
@@ -18,7 +21,7 @@ router.get('/', verifyUserAccess, async (req, res) => {
 
     res.render('restaurants/index', {
       userId: req.params.userId,
-      restaurants: user.restaurants,
+      restaurants: user.restaurants || [],
       user: req.session.user,
     });
   } catch (err) {
@@ -41,7 +44,9 @@ router.post('/', verifyUserAccess, async (req, res) => {
     const user = await User.findById(req.params.userId);
     if (!user) return res.status(404).send('User not found');
 
-    user.restaurants.push(req.body);
+    // Whitelist fields for restaurant creation
+    const { name, location, review, rating } = req.body;
+    user.restaurants.push({ name, location, review, rating });
     await user.save();
     res.redirect(`/users/${user._id}/restaurant`);
   } catch (err) {
@@ -54,7 +59,9 @@ router.post('/', verifyUserAccess, async (req, res) => {
 router.get('/:restaurantId', verifyUserAccess, async (req, res) => {
   try {
     const user = await User.findById(req.params.userId);
-    const restaurant = user?.restaurants.id(req.params.restaurantId);
+    if (!user) return res.status(404).send('User not found');
+
+    const restaurant = user.restaurants.id(req.params.restaurantId);
     if (!restaurant) return res.status(404).send('Restaurant not found');
 
     res.render('restaurants/show', {
@@ -72,7 +79,9 @@ router.get('/:restaurantId', verifyUserAccess, async (req, res) => {
 router.get('/:restaurantId/edit', verifyUserAccess, async (req, res) => {
   try {
     const user = await User.findById(req.params.userId);
-    const restaurant = user?.restaurants.id(req.params.restaurantId);
+    if (!user) return res.status(404).send('User not found');
+
+    const restaurant = user.restaurants.id(req.params.restaurantId);
     if (!restaurant) return res.status(404).send('Restaurant not found');
 
     res.render('restaurants/edit', {
@@ -90,11 +99,16 @@ router.get('/:restaurantId/edit', verifyUserAccess, async (req, res) => {
 router.put('/:restaurantId', verifyUserAccess, async (req, res) => {
   try {
     const user = await User.findById(req.params.userId);
-    const restaurant = user?.restaurants.id(req.params.restaurantId);
+    if (!user) return res.status(404).send('User not found');
+
+    const restaurant = user.restaurants.id(req.params.restaurantId);
     if (!restaurant) return res.status(404).send('Restaurant not found');
 
-    restaurant.set(req.body);
+    // Whitelist update fields
+    const { name, location, review, rating } = req.body;
+    restaurant.set({ name, location, review, rating });
     await user.save();
+
     res.redirect(`/users/${user._id}/restaurant`);
   } catch (err) {
     console.error('Error updating restaurant:', err);
@@ -106,7 +120,9 @@ router.put('/:restaurantId', verifyUserAccess, async (req, res) => {
 router.delete('/:restaurantId', verifyUserAccess, async (req, res) => {
   try {
     const user = await User.findById(req.params.userId);
-    const restaurant = user?.restaurants.id(req.params.restaurantId);
+    if (!user) return res.status(404).send('User not found');
+
+    const restaurant = user.restaurants.id(req.params.restaurantId);
     if (!restaurant) return res.status(404).send('Restaurant not found');
 
     restaurant.remove();
@@ -119,6 +135,7 @@ router.delete('/:restaurantId', verifyUserAccess, async (req, res) => {
 });
 
 module.exports = router;
+
 
 
 

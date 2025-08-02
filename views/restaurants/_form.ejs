@@ -1,0 +1,19 @@
+<form action="<%= formAction %>" method="POST">
+  <% if (formMethod === 'PUT') { %>
+    <input type="hidden" name="_method" value="PUT">
+  <% } %>
+
+  <label for="name">Restaurant Name:</label><br>
+  <input type="text" name="name" id="name" value="<%= restaurant?.name || '' %>" required><br><br>
+
+  <label for="cuisine">Cuisine Type:</label><br>
+  <input type="text" name="cuisine" id="cuisine" value="<%= restaurant?.cuisine || '' %>" required><br><br>
+
+  <label for="rating">Rating (1–5):</label><br>
+  <input type="number" name="rating" id="rating" min="1" max="5" value="<%= restaurant?.rating || '' %>" required><br><br>
+
+  <label for="review">Review:</label><br>
+  <textarea name="review" id="review" rows="4" required><%= restaurant?.review || '' %></textarea><br><br>
+
+  <button type="submit"><%= buttonLabel %></button>
+</form>
