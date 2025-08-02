@@ -1,25 +1,25 @@
-// =================== Environment Setup ===================
-const dotenv = require('dotenv');
-dotenv.config();
+// =================== Load Environment Variables ===================
+require('dotenv').config();
 
 // =================== Dependencies ===================
 const express = require('express');
 const mongoose = require('mongoose');
 const methodOverride = require('method-override');
 const session = require('express-session');
+const path = require('path');
 
 // =================== Middleware ===================
-const isSignedIn = require('./middleware/is-signed-in.js');
-const passUserToView = require('./middleware/pass-user-to-view.js');
+const isSignedIn = require('./middleware/is-signed-in');
+const passUserToView = require('./middleware/pass-user-to-view');
 
 // =================== Controllers ===================
-const authController = require('./controllers/auth.js');
-const restaurantController = require('./controllers/restaurants.js');
-const usersController = require('./controllers/users.js');
+const authController = require('./controllers/auth');
+const restaurantController = require('./controllers/restaurants');
+const usersController = require('./controllers/users');
 
-// =================== App Config ===================
+// =================== App Configuration ===================
 const app = express();
-const port = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3000;
 
 // =================== Database Connection ===================
 mongoose.connect(process.env.MONGODB_URI, {
@@ -28,50 +28,60 @@ mongoose.connect(process.env.MONGODB_URI, {
 });
 
 mongoose.connection.on('connected', () => {
-  console.log(`✅ Connected to MongoDB: ${mongoose.connection.name}`);
+  console.log(`✅ MongoDB connected: ${mongoose.connection.name}`);
 });
 
 mongoose.connection.on('error', (err) => {
   console.error(`❌ MongoDB connection error:\n${err}`);
 });
 
-// =================== Middleware ===================
-app.use(express.urlencoded({ extended: false }));
+// =================== Express Middleware ===================
+
+// Parses URL-encoded form data (for POST forms)
+app.use(express.urlencoded({ extended: true }));
+
+// Parses JSON bodies (e.g., from fetch requests)
+app.use(express.json());
+
+// Supports method override via query (?_method=PUT/DELETE)
 app.use(methodOverride('_method'));
+
+// Serve static files from the public directory
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Sessions
 app.use(session({
-  secret: process.env.SESSION_SECRET,
+  secret: process.env.SESSION_SECRET || 'changeme',
   resave: false,
-  saveUninitialized: true,
+  saveUninitialized: false,
 }));
+
+// Makes user available in all views
 app.use(passUserToView);
-app.use(express.static('public'));
 
 // =================== View Engine ===================
 app.set('view engine', 'ejs');
 
 // =================== Routes ===================
 
-// Home Page
+// Home route
 app.get('/', (req, res) => {
-  res.render('index.ejs', {
-    user: req.session.user,
-  });
+  res.render('index', { user: req.session.user });
 });
 
-// Public Routes
-app.use('/auth', authController);   // Handles sign-in and sign-up
-app.use('/users', usersController); // Handles user profiles or settings
+// Public routes
+app.use('/auth', authController);
+app.use('/users', usersController);
 
-// Protected Routes (requires login)
-app.use('/users/:userId/restaurant', isSignedIn, restaurantController); // ✅ Fix here
+// Protected restaurant routes
+app.use('/users/:userId/restaurant', isSignedIn, restaurantController);
 
 // Catch-all 404
 app.use((req, res) => {
-  res.status(404).send('Page not found');
+  res.status(404).send('404 - Page Not Found');
 });
 
 // =================== Start Server ===================
-app.listen(port, () => {
-  console.log(`🚀 Server is running on http://localhost:${port}`);
+app.listen(PORT, () => {
+  console.log(`🚀 Server running at http://localhost:${PORT}`);
 });
-

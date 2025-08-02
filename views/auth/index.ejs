@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Welcome</title>
+  <style>
+    body, html {
+      height: 100%;
+      margin: 0;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: #f0f2f5;
+    }
+    .container {
+      text-align: center;
+    }
+    button {
+      background-color: #007bff;
+      border: none;
+      color: white;
+      padding: 15px 40px;
+      margin: 10px;
+      font-size: 1.2rem;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      min-width: 150px;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    a {
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="/auth/sign-in"><button type="button">Sign In</button></a>
+    <a href="/auth/sign-up"><button type="button">Register</button></a>
+  </div>
+</body>
+</html>

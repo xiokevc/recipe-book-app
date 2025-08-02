@@ -10,6 +10,15 @@
       --text: #333;
       --accent: #e07a5f;
       --max: 1200px;
+      --badge-bg: #eee;
+      --badge-vg: #e94e1b;
+      --badge-gf: #f7c59f;
+      --badge-df: #276749;
+      --badge-ns: #111;
+      --badge-text: #fff;
+      --badge-radius: 50%;
+      --badge-size: 24px;
+      --font-sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
 
     * {
@@ -19,10 +28,11 @@
     }
 
     body {
-      font-family: Arial, sans-serif;
+      font-family: var(--font-sans);
       color: var(--text);
       background: var(--bg);
       line-height: 1.6;
+      padding: 0 1rem;
     }
 
     a {
@@ -31,97 +41,201 @@
     }
 
     .site-header {
-      background: var(--bg);
-      border-bottom: 1px solid #ddd;
-      padding: 1rem;
       max-width: var(--max);
-      margin: 0 auto;
+      margin: 2rem auto;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
 
-    .site-header ul {
-      list-style: none;
-      display: flex;
-      gap: 1rem;
+    .site-header h1 {
+      font-family: 'Georgia', serif;
+      font-size: 2rem;
+      font-weight: bold;
+      transform: skew(-10deg);
+      letter-spacing: 1px;
+      color: var(--text);
     }
 
-    .site-header h1 {
-      font-size: 1.5rem;
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 2rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    nav a:hover {
+      color: var(--accent);
     }
 
     .hero {
       text-align: center;
-      padding: 4rem 1rem;
-      background: #f5f5f5;
+      margin: 3rem 0;
     }
 
     .hero h2 {
-      font-size: 2.5rem;
-      margin-bottom: 1rem;
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: 1px;
     }
 
-    .hero .btn {
+    .btn {
       display: inline-block;
-      padding: 0.75rem 1.5rem;
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
       background: var(--accent);
-      color: #fff;
+      color: white;
       border-radius: 4px;
-      font-weight: bold;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+      letter-spacing: 1.5px;
+      transition: background 0.3s ease;
     }
 
-    .recipe-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 2rem;
+    .btn:hover {
+      background: #c05d4b;
+    }
+
+    .add-new {
       max-width: var(--max);
       margin: 2rem auto;
-      padding: 0 1rem;
+      text-align: center;
+    }
+
+    main#restaurants {
+      max-width: var(--max);
+      margin: 0 auto 4rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 2rem;
     }
 
     .recipe-card {
       border: 1px solid #eee;
       border-radius: 8px;
-      padding: 1rem;
-      background: #fff;
+      background: white;
+      box-shadow: 0 2px 8px rgb(0 0 0 / 0.05);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.3s ease;
+    }
+
+    .recipe-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgb(0 0 0 / 0.15);
     }
 
     .recipe-card img {
       width: 100%;
-      border-radius: 8px;
       height: 200px;
       object-fit: cover;
     }
 
+    .recipe-card .badges {
+      margin: 0.75rem 1rem 0 1rem;
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      width: var(--badge-size);
+      height: var(--badge-size);
+      border-radius: var(--badge-radius);
+      color: var(--badge-text);
+      font-weight: bold;
+      font-size: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-transform: uppercase;
+      cursor: default;
+    }
+
+    .badge.gf { background: var(--badge-gf); }
+    .badge.vg { background: var(--badge-vg); }
+    .badge.v { background: #f16725; } /* vegetarian */
+    .badge.df { background: var(--badge-df); }
+    .badge.ns { background: var(--badge-ns); }
+
     .recipe-card h3 {
-      margin-top: 0.75rem;
+      margin: 0.75rem 1rem 0.5rem 1rem;
       font-size: 1.2rem;
+      font-weight: 700;
+      line-height: 1.2;
     }
 
     .recipe-card p {
-      margin: 0.25rem 0;
+      margin: 0 1rem 0.75rem 1rem;
+      color: #555;
+      font-size: 0.95rem;
+      flex-grow: 1;
     }
 
-    .recipe-card .actions {
-      margin-top: 1rem;
+    .actions {
+      margin: 0 1rem 1rem 1rem;
       display: flex;
       justify-content: space-between;
+      font-weight: 600;
+      font-size: 0.9rem;
     }
 
-    .recipe-card form {
-      display: inline;
+    .actions a {
+      color: var(--accent);
     }
 
-    .add-new {
-      text-align: center;
-      margin: 2rem 0;
+    .actions form button {
+      color: #d9534f;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      padding: 0;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
     .subscribe {
-      background: #f5f5f5;
+      max-width: var(--max);
+      margin: 0 auto 4rem;
       padding: 3rem 1rem;
+      background: #f9f2f0;
       text-align: center;
+      font-weight: 600;
+      letter-spacing: 1px;
+      color: var(--accent);
+      border-radius: 8px;
+    }
+
+    .subscribe input[type="email"] {
+      padding: 0.5rem 1rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-right: 0.5rem;
+      font-size: 1rem;
+      width: 250px;
+      max-width: 100%;
+    }
+
+    .subscribe button {
+      padding: 0.5rem 1.25rem;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .subscribe button:hover {
+      background: #c05d4b;
     }
 
     .site-footer {
@@ -129,7 +243,11 @@
       padding: 2rem 1rem;
       font-size: 0.9rem;
       border-top: 1px solid #ddd;
+      max-width: var(--max);
+      margin: 0 auto 2rem;
+      color: #666;
     }
+
   </style>
 </head>
 <body>
@@ -139,39 +257,57 @@
     <nav>
       <ul>
         <li><a href="/">Home</a></li>
-        <li><a href="/auth/sign-out">Sign Out</a></li>
+        <% if (user) { %>
+          <li><a href="/auth/sign-out">Sign Out</a></li>
+        <% } else { %>
+          <li><a href="/auth/sign-in">Sign In</a></li>
+        <% } %>
       </ul>
     </nav>
   </header>
 
   <section class="hero">
-    <h2>Welcome, <%= user?.email || 'Guest' %>!</h2>
+    <h2>Welcome, <%= user ? user.email : 'Guest' %>!</h2>
     <a href="#restaurants" class="btn">View Your Reviews</a>
   </section>
 
+  <% if (user) { %>
   <div class="add-new">
-    <a href="/users/<%= user?._id %>/restaurant/new" class="btn">+ Add New Restaurant</a>
+    <a href="/users/<%= user._id %>/restaurant/new" class="btn">+ Add New Restaurant</a>
   </div>
+  <% } %>
 
-  <main id="restaurants" class="recipe-grid">
+  <main id="restaurants">
     <% if (!restaurants || restaurants.length === 0) { %>
       <p style="text-align:center; width: 100%;">No restaurant reviews yet. Start by adding one!</p>
     <% } else { %>
       <% restaurants.forEach(restaurant => { %>
         <article class="recipe-card">
-          <img src="https://source.unsplash.com/600x400/?restaurant,food,<%= encodeURIComponent(restaurant.name) %>" alt="<%= restaurant.name %>">
+          <img 
+            src="https://source.unsplash.com/600x400/?restaurant,food,<%= encodeURIComponent(restaurant.name) %>" 
+            alt="<%= restaurant.name %>" 
+            loading="lazy"
+          >
+          <div class="badges">
+            <% if (restaurant.glutenFree) { %><div class="badge gf" title="Gluten Free">GF</div><% } %>
+            <% if (restaurant.vegan) { %><div class="badge vg" title="Vegan">VG</div><% } %>
+            <% if (restaurant.vegetarian) { %><div class="badge v" title="Vegetarian">V</div><% } %>
+            <% if (restaurant.dairyFree) { %><div class="badge df" title="Dairy Free">DF</div><% } %>
+            <% if (restaurant.nutSensitive) { %><div class="badge ns" title="Nut Sensitive">NS</div><% } %>
+          </div>
           <h3><%= restaurant.name %></h3>
           <p><strong>Cuisine:</strong> <%= restaurant.cuisine || 'N/A' %></p>
           <p><strong>Rating:</strong> <%= restaurant.rating || 'N/A' %> / 5</p>
           <p><%= restaurant.review || '' %></p>
 
+          <% if (user) { %>
           <div class="actions">
             <a href="/users/<%= user._id %>/restaurant/<%= restaurant._id %>/edit">Edit</a>
-
-            <form action="/users/<%= user._id %>/restaurant/<%= restaurant._id %>?_method=DELETE" method="POST">
-              <button type="submit" style="color: red; background: none; border: none; cursor: pointer;">Delete</button>
+            <form action="/users/<%= user._id %>/restaurant/<%= restaurant._id %>?_method=DELETE" method="POST" onsubmit="return confirm('Are you sure you want to delete this restaurant?');">
+              <button type="submit">Delete</button>
             </form>
           </div>
+          <% } %>
         </article>
       <% }) %>
     <% } %>
@@ -180,7 +316,7 @@
   <section class="subscribe">
     <h3>Get Notified About New Features</h3>
     <form action="#" method="POST">
-      <input type="email" placeholder="Your email" required>
+      <input type="email" placeholder="Your email" required />
       <button type="submit">Subscribe</button>
     </form>
   </section>
@@ -191,5 +327,8 @@
 
 </body>
 </html>
+
+
+
 
 

@@ -30,7 +30,7 @@ router.get('/', verifyUserAccess, async (req, res) => {
   }
 });
 
-// NEW - Show form to create new restaurant
+// NEW - Show form to create a new restaurant
 router.get('/new', verifyUserAccess, (req, res) => {
   res.render('restaurants/new', {
     userId: req.params.userId,
@@ -38,24 +38,49 @@ router.get('/new', verifyUserAccess, (req, res) => {
   });
 });
 
-// CREATE - Add a new restaurant
+// CREATE - Add a new restaurant to user
 router.post('/', verifyUserAccess, async (req, res) => {
   try {
     const user = await User.findById(req.params.userId);
     if (!user) return res.status(404).send('User not found');
 
-    // Whitelist fields for restaurant creation
-    const { name, location, review, rating } = req.body;
-    user.restaurants.push({ name, location, review, rating });
+    // Destructure and normalize checkbox booleans
+    const {
+      name,
+      location,
+      cuisine,
+      review,
+      rating,
+      glutenFree,
+      vegan,
+      vegetarian,
+      dairyFree,
+      nutSensitive,
+    } = req.body;
+
+    user.restaurants.push({
+      name,
+      location,
+      cuisine,
+      review,
+      rating: rating ? Number(rating) : undefined,
+      glutenFree: glutenFree === 'on',
+      vegan: vegan === 'on',
+      vegetarian: vegetarian === 'on',
+      dairyFree: dairyFree === 'on',
+      nutSensitive: nutSensitive === 'on',
+    });
+
     await user.save();
-    res.redirect(`/users/${user._id}/restaurant`);
+
+    res.redirect(`/users/${user._id}/restaurants`);
   } catch (err) {
     console.error('Error creating restaurant:', err);
     res.status(500).send('Server error');
   }
 });
 
-// SHOW - Show specific restaurant details
+// SHOW - Show a specific restaurant details
 router.get('/:restaurantId', verifyUserAccess, async (req, res) => {
   try {
     const user = await User.findById(req.params.userId);
@@ -104,12 +129,36 @@ router.put('/:restaurantId', verifyUserAccess, async (req, res) => {
     const restaurant = user.restaurants.id(req.params.restaurantId);
     if (!restaurant) return res.status(404).send('Restaurant not found');
 
-    // Whitelist update fields
-    const { name, location, review, rating } = req.body;
-    restaurant.set({ name, location, review, rating });
+    // Destructure and normalize checkbox booleans
+    const {
+      name,
+      location,
+      cuisine,
+      review,
+      rating,
+      glutenFree,
+      vegan,
+      vegetarian,
+      dairyFree,
+      nutSensitive,
+    } = req.body;
+
+    restaurant.set({
+      name,
+      location,
+      cuisine,
+      review,
+      rating: rating ? Number(rating) : undefined,
+      glutenFree: glutenFree === 'on',
+      vegan: vegan === 'on',
+      vegetarian: vegetarian === 'on',
+      dairyFree: dairyFree === 'on',
+      nutSensitive: nutSensitive === 'on',
+    });
+
     await user.save();
 
-    res.redirect(`/users/${user._id}/restaurant`);
+    res.redirect(`/users/${user._id}/restaurants`);
   } catch (err) {
     console.error('Error updating restaurant:', err);
     res.status(500).send('Server error');
@@ -127,7 +176,8 @@ router.delete('/:restaurantId', verifyUserAccess, async (req, res) => {
 
     restaurant.remove();
     await user.save();
-    res.redirect(`/users/${user._id}/restaurant`);
+
+    res.redirect(`/users/${user._id}/restaurants`);
   } catch (err) {
     console.error('Error deleting restaurant:', err);
     res.status(500).send('Server error');

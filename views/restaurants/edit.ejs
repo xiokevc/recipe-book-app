@@ -1,16 +1,107 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Edit Restaurant Review</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Edit Restaurant</title>
+  <style>
+    :root {
+      --bg: #fff;
+      --text: #333;
+      --accent: #e07a5f;
+      --max: 1200px;
+    }
+
+    body {
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      background: #f8f8f8;
+      color: var(--text);
+      margin: 0;
+      padding: 0 1rem;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .site-header {
+      max-width: var(--max);
+      margin: 2rem auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .site-header h1 {
+      font-size: 2rem;
+      font-weight: bold;
+      color: var(--text);
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .container {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 2rem 1rem;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .form-title {
+      text-align: center;
+      font-size: 1.75rem;
+      margin-bottom: 1.5rem;
+      font-weight: bold;
+      color: var(--accent);
+    }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 2rem;
+      font-size: 0.95rem;
+    }
+  </style>
 </head>
 <body>
-  <h1>Edit <%= restaurant.name %></h1>
-  <%- include('_form', {
-    formAction: `/users/${userId}/restaurant/${restaurant._id}?_method=PUT`,
-    formMethod: 'PUT',
-    restaurant: restaurant,
-    buttonLabel: 'Update'
-  }) %>
-  <a href="/users/<%= userId %>/restaurant">← Back to All Restaurants</a>
+
+  <header class="site-header">
+    <h1>Restaurant Reviews</h1>
+    <nav>
+      <ul>
+        <li><a href="/">Home</a></li>
+        <% if (user) { %>
+          <li><a href="/auth/sign-out">Sign Out</a></li>
+        <% } else { %>
+          <li><a href="/auth/sign-in">Sign In</a></li>
+        <% } %>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="container">
+    <h2 class="form-title">Edit <%= restaurant.name %></h2>
+
+    <%- include('../_form', {
+      formAction: `/users/${userId}/restaurant/${restaurant._id}?_method=PUT`,
+      formMethod: 'PUT',
+      restaurant: restaurant,
+      buttonLabel: 'Update'
+    }) %>
+
+    <div class="back-link">
+      <a href="/users/<%= userId %>/restaurant">← Back to All Restaurants</a>
+    </div>
+  </main>
+
 </body>
 </html>
+
