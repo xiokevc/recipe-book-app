@@ -37,43 +37,43 @@ mongoose.connection.on('error', (err) => {
 
 // =================== Express Middleware ===================
 
-// Parses URL-encoded form data (for POST forms)
+// Parse form data and JSON
 app.use(express.urlencoded({ extended: true }));
-
-// Parses JSON bodies (e.g., from fetch requests)
 app.use(express.json());
 
-// Supports method override via query (?_method=PUT/DELETE)
+// Enable method override for PUT & DELETE
 app.use(methodOverride('_method'));
 
-// Serve static files from the public directory
-app.use(express.static(path.join(__dirname, 'public')));
+// Serve static files
+app.use(express.static(path.join(__dirname, 'public'))); // /styles.css, etc.
+app.use('/assets', express.static(path.join(__dirname, 'assets'))); // /assets/forkit.png
 
-// Sessions
+// Session configuration
 app.use(session({
   secret: process.env.SESSION_SECRET || 'changeme',
   resave: false,
   saveUninitialized: false,
 }));
 
-// Makes user available in all views
+// Share user data with all views
 app.use(passUserToView);
 
 // =================== View Engine ===================
 app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
 // =================== Routes ===================
 
-// Home route
+// Home page
 app.get('/', (req, res) => {
   res.render('index', { user: req.session.user });
 });
 
-// Public routes
+// Auth & user routes
 app.use('/auth', authController);
 app.use('/users', usersController);
 
-// Protected restaurant routes
+// Restaurant routes (protected)
 app.use('/users/:userId/restaurant', isSignedIn, restaurantController);
 
 // Catch-all 404
@@ -85,4 +85,5 @@ app.use((req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
 });
+
 
