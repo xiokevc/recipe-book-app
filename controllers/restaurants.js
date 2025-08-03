@@ -43,10 +43,15 @@ router.post('/', verifyUserAccess, async (req, res) => {
 
     const { name, cuisine, rating, review, imageUrl } = req.body;
 
+    const ratingNum = Number(rating);
+    if (isNaN(ratingNum) || ratingNum < 1 || ratingNum > 5) {
+      return res.status(400).send('Invalid rating. Must be a number between 1 and 5.');
+    }
+
     user.restaurants.push({
       name: name?.trim(),
       cuisine: cuisine?.trim(),
-      rating: rating ? Number(rating) : 0,
+      rating: ratingNum,
       review: review?.trim(),
       imageUrl: imageUrl?.trim(),
     });
@@ -110,10 +115,15 @@ router.put('/:restaurantId', verifyUserAccess, async (req, res) => {
 
     const { name, cuisine, rating, review, imageUrl } = req.body;
 
+    const ratingNum = Number(rating);
+    if (isNaN(ratingNum) || ratingNum < 1 || ratingNum > 5) {
+      return res.status(400).send('Invalid rating. Must be a number between 1 and 5.');
+    }
+
     restaurant.set({
       name: name?.trim(),
       cuisine: cuisine?.trim(),
-      rating: rating ? Number(rating) : 0,
+      rating: ratingNum,
       review: review?.trim(),
       imageUrl: imageUrl?.trim(),
     });
@@ -146,6 +156,7 @@ router.delete('/:restaurantId', verifyUserAccess, async (req, res) => {
 });
 
 module.exports = router;
+
 
 
 
