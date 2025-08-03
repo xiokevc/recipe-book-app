@@ -16,26 +16,31 @@ router.get('/sign-up', (req, res) => {
 // POST /auth/sign-up
 router.post('/sign-up', async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { username, email, password } = req.body;
     const emailLower = email.toLowerCase();
 
-    const existingUser = await User.findOne({ email: emailLower });
+    const existingUser = await User.findOne({
+      $or: [{ email: emailLower }, { username }]
+    });
+
     if (existingUser) {
       return res.render('auth/sign-up', {
         user: null,
-        errorMessage: 'Email already registered. Please try signing in or use another email.',
+        errorMessage: 'Username or email already taken.',
       });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = await User.create({
+      username,
       email: emailLower,
       password: hashedPassword,
     });
 
     req.session.user = {
       _id: newUser._id,
+      username: newUser.username,
       email: newUser.email,
     };
 
@@ -62,27 +67,26 @@ router.get('/sign-in', (req, res) => {
 // POST /auth/sign-in
 router.post('/sign-in', async (req, res) => {
   try {
-    const { email, password } = req.body;
-    const emailLower = email.toLowerCase();
+    const { identifier, password } = req.body; // "identifier" can be username or email
+    const identifierLower = identifier.toLowerCase();
 
-    const user = await User.findOne({ email: emailLower });
-    if (!user) {
+    const user = await User.findOne({
+      $or: [
+        { email: identifierLower },
+        { username: identifier }
+      ]
+    });
+
+    if (!user || !(await bcrypt.compare(password, user.password))) {
       return res.render('auth/sign-in', {
         user: null,
-        errorMessage: 'Wrong username/password combination. Try Again.',
-      });
-    }
-
-    const match = await bcrypt.compare(password, user.password);
-    if (!match) {
-      return res.render('auth/sign-in', {
-        user: null,
-        errorMessage: 'Wrong username/password combination. Try Again.',
+        errorMessage: 'Invalid username/email or password.',
       });
     }
 
     req.session.user = {
       _id: user._id,
+      username: user.username,
       email: user.email,
     };
 
@@ -106,6 +110,7 @@ router.get('/sign-out', (req, res) => {
 });
 
 module.exports = router;
+
 
 
 
