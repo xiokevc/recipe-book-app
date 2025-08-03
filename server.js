@@ -73,7 +73,7 @@ app.get('/', (req, res) => {
 app.use('/auth', authController);
 app.use('/users', usersController);
 
-// Restaurant routes (protected)
+// Restaurant routes (protected, nested under user)
 app.use('/users/:userId/restaurant', isSignedIn, restaurantController);
 
 // Catch-all 404
@@ -85,5 +85,6 @@ app.use((req, res) => {
 app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
 });
+
 
 

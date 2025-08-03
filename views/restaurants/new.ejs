@@ -34,16 +34,17 @@
     <h1>Add a New Restaurant</h1>
 
     <%- include('./_form', {
-      formAction: `/users/${userId}/restaurant`,
+      formAction: `/users/${user._id}/restaurant`,
       formMethod: 'POST',
       restaurant: null,
       buttonLabel: 'Create'
     }) %>
 
-    <p><a href="/users/<%= userId %>/restaurant">← Back to All Restaurants</a></p>
+    <p><a href="/users/<%= user._id %>/restaurant">← Back to All Restaurants</a></p>
   </div>
 </body>
 </html>
+
 
 
 

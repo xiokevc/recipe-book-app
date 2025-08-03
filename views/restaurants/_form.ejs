@@ -32,10 +32,26 @@
     value="<%= restaurant?.rating || '' %>"
   /><br /><br />
 
+  <label for="imageUrl">Image URL:</label><br />
+  <input
+    type="url"
+    id="imageUrl"
+    name="imageUrl"
+    placeholder="https://example.com/photo.jpg"
+    required
+    value="<%= restaurant?.imageUrl || '' %>"
+  /><br /><br />
+
   <label for="review">Review:</label><br />
-  <textarea id="review" name="review" rows="4" required><%= restaurant?.review || '' %></textarea
-  ><br /><br />
+  <textarea
+    id="review"
+    name="review"
+    rows="4"
+    required
+  ><%= restaurant?.review || '' %></textarea><br /><br />
 
   <button type="submit"><%= buttonLabel %></button>
 </form>
+
+
 
