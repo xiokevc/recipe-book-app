@@ -53,7 +53,7 @@ router.post('/', verifyUserAccess, async (req, res) => {
       cuisine: cuisine?.trim(),
       rating: ratingNum,
       review: review?.trim(),
-      imageUrl: imageUrl?.trim(),
+      imageUrl: imageUrl?.trim() || '',
     });
 
     await user.save();
@@ -125,7 +125,7 @@ router.put('/:restaurantId', verifyUserAccess, async (req, res) => {
       cuisine: cuisine?.trim(),
       rating: ratingNum,
       review: review?.trim(),
-      imageUrl: imageUrl?.trim(),
+      imageUrl: imageUrl?.trim() || '',
     });
 
     await user.save();
@@ -156,6 +156,8 @@ router.delete('/:restaurantId', verifyUserAccess, async (req, res) => {
 });
 
 module.exports = router;
+
+
 
 
 
