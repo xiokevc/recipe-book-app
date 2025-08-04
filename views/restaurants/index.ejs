@@ -184,7 +184,7 @@
             loading="lazy"
           />
           <div class="card-body">
-            <h3><%= restaurant.name %></h3>
+            <h3><a href="/users/<%= user._id %>/restaurant/<%= restaurant._id %>"><%= restaurant.name %></a></h3>
             <p><strong>Cuisine:</strong> <%= restaurant.cuisine || 'N/A' %></p>
             <p><strong>Location:</strong> <%= restaurant.location || 'N/A' %></p>
             <p><strong>Rating:</strong> <%= avgRating %> / 5</p>
@@ -204,6 +204,7 @@
 
 </body>
 </html>
+
 
 
 

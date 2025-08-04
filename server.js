@@ -15,7 +15,7 @@ const passUserToView = require('./middleware/pass-user-to-view');
 // =================== Routes ===================
 const authController = require('./controllers/auth');
 const usersController = require('./controllers/users');
-const restaurantRoutes = require('./routes/restaurants'); 
+const restaurantRoutes = require('./routes/restaurants');
 
 // =================== App Configuration ===================
 const app = express();
@@ -36,25 +36,31 @@ mongoose.connection.on('error', (err) => {
 });
 
 // =================== Express Middleware ===================
-// Parse URL-encoded bodies (for form submissions) and JSON bodies
+
+// Parse URL-encoded bodies and JSON payloads
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Enable method override to support PUT and DELETE in forms
+// Method override for PUT/DELETE in forms
 app.use(methodOverride('_method'));
 
 // Serve static assets (CSS, images, JS)
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
-// Session configuration for user login sessions
+// Configure session
 app.use(session({
   secret: process.env.SESSION_SECRET || 'changeme',
   resave: false,
   saveUninitialized: false,
+  cookie: {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 1000 * 60 * 60 * 24, // 1 day
+  }
 }));
 
-// Make logged-in user info available in all views
+// Custom middleware: Pass session user to all views
 app.use(passUserToView);
 
 // =================== View Engine ===================
@@ -63,30 +69,28 @@ app.set('views', path.join(__dirname, 'views'));
 
 // =================== Routes ===================
 
-// Home route
+// Home Page
 app.get('/', (req, res) => {
   res.render('index', { user: req.session.user });
 });
 
-// Authentication routes
+// Auth Routes
 app.use('/auth', authController);
 
-// User-related routes
+// User Routes
 app.use('/users', usersController);
 
-// Restaurant routes mounted under /users, routes file handles :userId
+// Restaurant Routes under user context
 app.use('/users/:userId/restaurant', restaurantRoutes);
 
-// 404 catch-all
+// Catch-all 404
 app.use((req, res) => {
-  res.status(404).send('404 - Page Not Found');
+  res.status(404).render('404', { user: req.session.user });
 });
 
 // =================== Start Server ===================
 app.listen(PORT, () => {
   console.log(`🚀 Server running at http://localhost:${PORT}`);
 });
-
-
 
 

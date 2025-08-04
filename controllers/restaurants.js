@@ -12,7 +12,7 @@ function verifyUserAccess(req, res, next) {
 // INDEX – List all restaurants for the user
 async function index(req, res) {
   try {
-    const restaurants = await Restaurant.find({ user: req.params.userId });
+    const restaurants = await Restaurant.find({ user: req.params.userId }).lean();
     res.render('restaurants/index', {
       user: req.session.user,
       userId: req.params.userId,
@@ -32,7 +32,7 @@ function newForm(req, res) {
   });
 }
 
-// CREATE – Create a new restaurant
+// CREATE – Create a new restaurant with initial rating
 async function create(req, res) {
   try {
     const user = await User.findById(req.params.userId);
@@ -50,7 +50,11 @@ async function create(req, res) {
       cuisine: cuisine?.trim(),
       location: location?.trim(),
       imageUrl: imageUrl?.trim() || '',
-      ratings: [{ user: user._id, stars: ratingNum, comment: review?.trim() || '' }],
+      ratings: [{
+        user: user._id,
+        stars: ratingNum,
+        comment: review?.trim() || ''
+      }],
       user: user._id,
     });
 
@@ -70,7 +74,7 @@ async function show(req, res) {
     const restaurant = await Restaurant.findOne({
       _id: req.params.restaurantId,
       user: req.params.userId,
-    });
+    }).lean();
 
     if (!restaurant) return res.status(404).send('Restaurant not found');
 
@@ -91,7 +95,7 @@ async function editForm(req, res) {
     const restaurant = await Restaurant.findOne({
       _id: req.params.restaurantId,
       user: req.params.userId,
-    });
+    }).lean();
 
     if (!restaurant) return res.status(404).send('Restaurant not found');
 
@@ -106,7 +110,7 @@ async function editForm(req, res) {
   }
 }
 
-// UPDATE – Update a restaurant
+// UPDATE – Update a restaurant and its review
 async function update(req, res) {
   try {
     const restaurant = await Restaurant.findOne({
@@ -170,6 +174,39 @@ async function remove(req, res) {
   }
 }
 
+// ADD REVIEW – Add a review from index page
+async function addReview(req, res) {
+  try {
+    const { stars, comment } = req.body;
+    const rating = Number(stars);
+
+    if (isNaN(rating) || rating < 1 || rating > 5) {
+      return res.status(400).send('Stars must be between 1 and 5');
+    }
+
+    const restaurant = await Restaurant.findOne({
+      _id: req.params.restaurantId,
+      user: req.params.userId,
+    });
+
+    if (!restaurant) return res.status(404).send('Restaurant not found');
+
+    restaurant.ratings.push({
+      user: req.session.user._id,
+      stars: rating,
+      comment: comment?.trim() || '',
+    });
+
+    restaurant.calculateAverageRating();
+    await restaurant.save();
+
+    res.redirect(`/users/${req.params.userId}/restaurant`);
+  } catch (err) {
+    console.error('Error adding review:', err);
+    res.status(500).send('Server error');
+  }
+}
+
 module.exports = {
   verifyUserAccess,
   index,
@@ -179,6 +216,7 @@ module.exports = {
   editForm,
   update,
   remove,
+  addReview,
 };
 
 

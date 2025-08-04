@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title><%= restaurant.name %> - Details</title>
+</head>
+<body>
+
+  <h1><%= restaurant.name %></h1>
+  <p>Cuisine: <%= restaurant.cuisine || 'N/A' %></p>
+  <p>Location: <%= restaurant.location || 'N/A' %></p>
+  <img src="<%= restaurant.imageUrl || 'https://source.unsplash.com/600x400/?food,restaurant' %>" alt="<%= restaurant.name %>" width="600" />
+
+  <h2>Reviews</h2>
+  <% if (restaurant.ratings.length === 0) { %>
+    <p>No reviews yet.</p>
+  <% } else { %>
+    <ul>
+      <% restaurant.ratings.forEach(review => { %>
+        <li><strong><%= review.stars %>/5</strong> - <%= review.comment %> (Posted on <%= review.createdAt.toDateString() %>)</li>
+      <% }) %>
+    </ul>
+  <% } %>
+
+  <h3>Add a Review</h3>
+  <form action="/users/<%= user._id %>/restaurant/<%= restaurant._id %>/reviews" method="POST">
+    <label for="stars">Rating (1-5):</label>
+    <input type="number" name="stars" min="1" max="5" required />
+    <br />
+    <label for="comment">Comment:</label>
+    <textarea name="comment" rows="4" required></textarea>
+    <br />
+    <button type="submit">Submit Review</button>
+  </form>
+
+  <p><a href="/users/<%= user._id %>/restaurant">Back to Restaurants</a></p>
+</body>
+</html>

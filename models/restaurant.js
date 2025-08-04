@@ -18,12 +18,10 @@ const restaurantSchema = new Schema({
   cuisine: {
     type: String,
     trim: true,
-    
   },
   location: {
     type: String,
     trim: true,
-    
   },
   imageUrl: {
     type: String,
@@ -64,5 +62,6 @@ restaurantSchema.methods.calculateAverageRating = function () {
 };
 
 module.exports = mongoose.model('Restaurant', restaurantSchema);
+
 
 
