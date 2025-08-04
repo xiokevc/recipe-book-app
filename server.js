@@ -12,10 +12,10 @@ const path = require('path');
 const isSignedIn = require('./middleware/is-signed-in');
 const passUserToView = require('./middleware/pass-user-to-view');
 
-// =================== Controllers ===================
+// =================== Routes ===================
 const authController = require('./controllers/auth');
-const restaurantController = require('./controllers/restaurants');
 const usersController = require('./controllers/users');
+const restaurantRoutes = require('./routes/restaurants'); // Import restaurant routes
 
 // =================== App Configuration ===================
 const app = express();
@@ -36,26 +36,25 @@ mongoose.connection.on('error', (err) => {
 });
 
 // =================== Express Middleware ===================
-
-// Parse form data and JSON
+// Parse URL-encoded bodies (for form submissions) and JSON bodies
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Enable method override for PUT & DELETE
+// Enable method override to support PUT and DELETE in forms
 app.use(methodOverride('_method'));
 
-// Serve static files
-app.use(express.static(path.join(__dirname, 'public'))); // /styles.css, etc.
-app.use('/assets', express.static(path.join(__dirname, 'assets'))); // /assets/forkit.png
+// Serve static assets (CSS, images, JS)
+app.use(express.static(path.join(__dirname, 'public')));
+app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
-// Session configuration
+// Session configuration for user login sessions
 app.use(session({
   secret: process.env.SESSION_SECRET || 'changeme',
   resave: false,
   saveUninitialized: false,
 }));
 
-// Share user data with all views
+// Make logged-in user info available in all views
 app.use(passUserToView);
 
 // =================== View Engine ===================
@@ -64,19 +63,21 @@ app.set('views', path.join(__dirname, 'views'));
 
 // =================== Routes ===================
 
-// Home page
+// Home route
 app.get('/', (req, res) => {
   res.render('index', { user: req.session.user });
 });
 
-// Auth & user routes
+// Authentication routes
 app.use('/auth', authController);
+
+// User-related routes
 app.use('/users', usersController);
 
-// Restaurant routes (protected, nested under user)
-app.use('/users/:userId/restaurant', isSignedIn, restaurantController);
+// Restaurant routes mounted under /users, routes file handles :userId
+app.use('/users', restaurantRoutes);
 
-// Catch-all 404
+// 404 catch-all
 app.use((req, res) => {
   res.status(404).send('404 - Page Not Found');
 });

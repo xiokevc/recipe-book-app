@@ -10,7 +10,6 @@
       padding: 0;
       box-sizing: border-box;
     }
-
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       color: #333;
@@ -18,16 +17,13 @@
       line-height: 1.6;
       padding: 1rem;
     }
-
     a {
       color: #e07a5f;
       text-decoration: none;
     }
-
     a:hover {
       text-decoration: underline;
     }
-
     header.site-header {
       max-width: 1200px;
       margin: 0 auto 2rem;
@@ -35,34 +31,28 @@
       justify-content: space-between;
       align-items: center;
     }
-
     header h1 {
       font-size: 2rem;
       color: #333;
     }
-
     nav ul {
       list-style: none;
       display: flex;
       gap: 1.5rem;
     }
-
     nav a {
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 1px;
     }
-
     .hero {
       text-align: center;
       margin: 2rem auto;
     }
-
     .hero h2 {
       font-size: 1.8rem;
       margin-bottom: 1rem;
     }
-
     .btn {
       background: #e07a5f;
       color: white;
@@ -75,16 +65,13 @@
       transition: background 0.3s ease;
       display: inline-block;
     }
-
     .btn:hover {
       background: #c95d4d;
     }
-
     .add-new {
       text-align: center;
       margin: 2rem 0;
     }
-
     main#restaurants {
       max-width: 1200px;
       margin: 0 auto;
@@ -92,7 +79,6 @@
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 2rem;
     }
-
     .card {
       background: white;
       border-radius: 8px;
@@ -102,47 +88,39 @@
       flex-direction: column;
       transition: transform 0.3s ease;
     }
-
     .card:hover {
       transform: translateY(-5px);
       box-shadow: 0 5px 15px rgba(0,0,0,0.15);
     }
-
     .card img {
       width: 100%;
       height: 200px;
       object-fit: cover;
     }
-
     .card-body {
       padding: 1rem;
       flex-grow: 1;
     }
-
     .card-body h3 {
       font-size: 1.2rem;
       margin-bottom: 0.5rem;
       color: #222;
       text-transform: uppercase;
     }
-
     .card-body p {
       font-size: 0.95rem;
       color: #555;
       margin-bottom: 0.4rem;
     }
-
     .card-actions {
       display: flex;
       justify-content: space-between;
       padding: 1rem;
       border-top: 1px solid #eee;
     }
-
     .card-actions form {
       display: inline;
     }
-
     .card-actions button {
       background: none;
       border: none;
@@ -184,26 +162,25 @@
     </div>
   <% } %>
 
-  <main id="restaurants">
+  <main id="restaurants" role="main" aria-label="List of restaurants">
     <% if (!restaurants || restaurants.length === 0) { %>
       <p style="text-align:center; width: 100%;">No restaurant reviews yet. Start by adding one!</p>
     <% } else { %>
-      <% restaurants.forEach(restaurant => { 
-          // Calculate averageRating from embedded ratings if available
-          let avgRating = 0;
-          if (restaurant.averageRating) {
-            avgRating = restaurant.averageRating.toFixed(1);
-          } else if (restaurant.ratings && restaurant.ratings.length > 0) {
-            const sum = restaurant.ratings.reduce((acc, r) => acc + r.stars, 0);
-            avgRating = (sum / restaurant.ratings.length).toFixed(1);
-          }
+      <% restaurants.forEach(restaurant => {
+        let avgRating = 0;
+        if (restaurant.averageRating != null && !isNaN(restaurant.averageRating)) {
+          avgRating = restaurant.averageRating.toFixed(1);
+        } else if (restaurant.ratings && restaurant.ratings.length > 0) {
+          const sum = restaurant.ratings.reduce((acc, r) => acc + r.stars, 0);
+          avgRating = (sum / restaurant.ratings.length).toFixed(1);
+        }
       %>
-        <article class="card">
+        <article class="card" aria-label="Restaurant <%= restaurant.name %>">
           <img
             src="<%= restaurant.imageUrl && restaurant.imageUrl.trim() !== '' 
               ? restaurant.imageUrl 
               : 'https://source.unsplash.com/600x400/?restaurant,food,' + encodeURIComponent(restaurant.name) %>"
-            alt="<%= restaurant.name %>"
+            alt="Image of <%= restaurant.name %>"
             loading="lazy"
           />
           <div class="card-body">
@@ -214,8 +191,8 @@
           </div>
           <% if (user) { %>
             <div class="card-actions">
-              <a href="/users/<%= user._id %>/restaurant/<%= restaurant._id %>/edit">Edit</a>
-              <form action="/users/<%= user._id %>/restaurant/<%= restaurant._id %>?_method=DELETE" method="POST" onsubmit="return confirm('Are you sure you want to delete this restaurant?');">
+              <a href="/users/<%= user._id %>/restaurant/<%= restaurant._id %>/edit" aria-label="Edit <%= restaurant.name %>">Edit</a>
+              <form action="/users/<%= user._id %>/restaurant/<%= restaurant._id %>?_method=DELETE" method="POST" onsubmit="return confirm('Are you sure you want to delete this restaurant?');" aria-label="Delete <%= restaurant.name %>">
                 <button type="submit">Delete</button>
               </form>
             </div>
@@ -227,6 +204,7 @@
 
 </body>
 </html>
+
 
 
 

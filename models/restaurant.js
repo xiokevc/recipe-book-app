@@ -18,12 +18,12 @@ const restaurantSchema = new Schema({
   cuisine: {
     type: String,
     trim: true,
-    // optional
+    
   },
   location: {
     type: String,
     trim: true,
-    // optional
+    
   },
   imageUrl: {
     type: String,
@@ -34,7 +34,7 @@ const restaurantSchema = new Schema({
 
         try {
           const url = new URL(v);
-          // Check the pathname ends with an image extension (case-insensitive)
+          // Check pathname ends with an image extension (case-insensitive)
           return /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(url.pathname);
         } catch {
           return false; // invalid URL format
