@@ -6,7 +6,7 @@ A full-stack app that lets users rate and review restaurants! Users can sign up,
 
 ## 🌐 Live App
 
-🔗 [Deployed App on Render](https://yourapp.onrender.com)
+🔗 [Deployed App on Render](https://restaurant-rating-de6c8b0d53f5.herokuapp.com/)
 
 ---
 
@@ -24,13 +24,14 @@ A full-stack app that lets users rate and review restaurants! Users can sign up,
 - EJS
 - CSS Flexbox
 - Express-session
+- Adobe Photoshop
 
 ---
 
 ## 🧠 Planning Docs
 
-- [Trello board](https://your-planning-board-link)
-- [Wireframes](https://your-wireframes-link)
+- [Trello board](https://trello.com/b/pKiDnZ83/my-trello-board)
+- [Wireframes](https://trello.com/b/pKiDnZ83/my-trello-board)
 
 ---
 
@@ -38,7 +39,6 @@ A full-stack app that lets users rate and review restaurants! Users can sign up,
 
 - GIF background by Giphy
 - Fonts from Google Fonts
-- Restaurant data inspired by Yelp
 
 ---
 
@@ -48,6 +48,7 @@ A full-stack app that lets users rate and review restaurants! Users can sign up,
 - Add Google Maps integration for restaurant locations  
 - Allow image uploads with Cloudinary  
 - Add pagination or filtering
+- User community integration
 
 
 

@@ -37,6 +37,9 @@ mongoose.connection.on('error', (err) => {
 
 // =================== Express Middleware ===================
 
+// Heroku uses a proxy (e.g., for SSL), so trust it
+app.set('trust proxy', 1); 
+
 // Parse URL-encoded bodies and JSON payloads
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -55,7 +58,8 @@ app.use(session({
   saveUninitialized: false,
   cookie: {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
+    secure: process.env.NODE_ENV === 'production', 
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', 
     maxAge: 1000 * 60 * 60 * 24, // 1 day
   }
 }));
@@ -90,7 +94,5 @@ app.use((req, res) => {
 
 // =================== Start Server ===================
 app.listen(PORT, () => {
-  console.log(`🚀 Server running at http://localhost:${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
-
-
