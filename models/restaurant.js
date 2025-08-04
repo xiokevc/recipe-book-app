@@ -10,6 +10,7 @@ const ratingSchema = new Schema({
 
 // ========== Restaurant Schema ==========
 const restaurantSchema = new Schema({
+  user: { type: Schema.Types.ObjectId, ref: 'User', required: true },  // <-- Add user ref here
   name: {
     type: String,
     required: [true, 'Restaurant name is required'],
@@ -29,13 +30,11 @@ const restaurantSchema = new Schema({
     validate: {
       validator: function (v) {
         if (!v) return true; // allow empty or undefined
-
         try {
           const url = new URL(v);
-          // Check pathname ends with an image extension (case-insensitive)
           return /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(url.pathname);
         } catch {
-          return false; // invalid URL format
+          return false;
         }
       },
       message: props => `${props.value} is not a valid image URL (must be a direct image link)`
@@ -62,6 +61,5 @@ restaurantSchema.methods.calculateAverageRating = function () {
 };
 
 module.exports = mongoose.model('Restaurant', restaurantSchema);
-
 
 

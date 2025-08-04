@@ -9,10 +9,13 @@ function verifyUserAccess(req, res, next) {
   return res.status(403).send('Unauthorized');
 }
 
-// INDEX – List all restaurants for the user
+// INDEX – List all restaurants for the user with populated ratings.user
 async function index(req, res) {
   try {
-    const restaurants = await Restaurant.find({ user: req.params.userId }).lean();
+    const restaurants = await Restaurant.find({ user: req.params.userId })
+      .populate('ratings.user', 'username') // populate username of reviewers
+      .lean();
+
     res.render('restaurants/index', {
       user: req.session.user,
       userId: req.params.userId,
@@ -55,7 +58,7 @@ async function create(req, res) {
         stars: ratingNum,
         comment: review?.trim() || ''
       }],
-      user: user._id,
+      user: user._id,  // IMPORTANT: associate user here
     });
 
     restaurant.calculateAverageRating();
@@ -74,7 +77,9 @@ async function show(req, res) {
     const restaurant = await Restaurant.findOne({
       _id: req.params.restaurantId,
       user: req.params.userId,
-    }).lean();
+    })
+    .populate('ratings.user', 'username')
+    .lean();
 
     if (!restaurant) return res.status(404).send('Restaurant not found');
 
@@ -174,7 +179,7 @@ async function remove(req, res) {
   }
 }
 
-// ADD REVIEW – Add a review from index page
+// ADD REVIEW – Add a review from index page or show page
 async function addReview(req, res) {
   try {
     const { stars, comment } = req.body;
