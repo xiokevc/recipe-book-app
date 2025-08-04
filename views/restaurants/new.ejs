@@ -1,6 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Add New Restaurant</title>
   <style>
     body {
@@ -13,11 +15,15 @@
     h1 {
       color: #e07a5f;
       text-align: center;
+      margin-bottom: 1.5rem;
     }
     a {
       color: #e07a5f;
       text-decoration: none;
       font-weight: bold;
+    }
+    a:hover {
+      text-decoration: underline;
     }
     .container {
       background: white;
@@ -33,17 +39,20 @@
   <div class="container">
     <h1>Add a New Restaurant</h1>
 
-    <%- include('./_form', {
+    <%- include('_form', {
       formAction: `/users/${user._id}/restaurant`,
       formMethod: 'POST',
       restaurant: null,
       buttonLabel: 'Create'
     }) %>
 
-    <p><a href="/users/<%= user._id %>/restaurant">← Back to All Restaurants</a></p>
+    <p style="margin-top: 1.5rem;">
+      <a href="/users/<%= user._id %>/restaurant">← Back to All Restaurants</a>
+    </p>
   </div>
 </body>
 </html>
+
 
 
 

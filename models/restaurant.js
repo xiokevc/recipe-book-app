@@ -17,18 +17,28 @@ const restaurantSchema = new Schema({
   },
   cuisine: {
     type: String,
-    trim: true
+    trim: true,
+    // optional
   },
   location: {
     type: String,
-    trim: true
+    trim: true,
+    // optional
   },
   imageUrl: {
     type: String,
     trim: true,
     validate: {
       validator: function (v) {
-        return /^https?:\/\/.*\.(jpg|jpeg|png|gif|webp|svg)$/i.test(v);
+        if (!v) return true; // allow empty or undefined
+
+        try {
+          const url = new URL(v);
+          // Check the pathname ends with an image extension (case-insensitive)
+          return /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(url.pathname);
+        } catch {
+          return false; // invalid URL format
+        }
       },
       message: props => `${props.value} is not a valid image URL (must be a direct image link)`
     }
@@ -48,9 +58,11 @@ restaurantSchema.methods.calculateAverageRating = function () {
     this.averageRating = 0;
   } else {
     const sum = this.ratings.reduce((acc, r) => acc + r.stars, 0);
-    this.averageRating = sum / this.ratings.length;
+    this.averageRating = Math.round((sum / this.ratings.length) * 10) / 10; // round to 1 decimal place
   }
   return this.averageRating;
 };
 
 module.exports = mongoose.model('Restaurant', restaurantSchema);
+
+

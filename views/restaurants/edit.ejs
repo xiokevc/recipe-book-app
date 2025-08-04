@@ -9,6 +9,7 @@
       font-family: Arial, sans-serif;
       padding: 2rem;
       background-color: #f8f8f8;
+      color: #333;
     }
     main {
       background: #fff;
@@ -16,10 +17,25 @@
       border-radius: 8px;
       max-width: 600px;
       margin: auto;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    header {
+      max-width: 600px;
+      margin: 0 auto 1.5rem;
+      padding: 0 2rem;
     }
     a {
       color: #e07a5f;
       text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 1rem;
+      padding-left: 0;
     }
   </style>
 </head>
@@ -42,15 +58,13 @@
     <h2>Edit Restaurant</h2>
 
     <%- include('_form', {
-      formAction: `/users/${userId}/restaurant/${restaurant._id}`,
+      formAction: `/users/${userId || user?._id}/restaurant/${restaurant._id}`,
       formMethod: 'PUT',
       restaurant,
       buttonLabel: 'Update'
     }) %>
 
-    <p><a href="/users/<%= userId %>/restaurant">← Back to All Restaurants</a></p>
+    <p><a href="/users/<%= userId || user?._id %>/restaurant">← Back to All Restaurants</a></p>
   </main>
 </body>
 </html>
-
-

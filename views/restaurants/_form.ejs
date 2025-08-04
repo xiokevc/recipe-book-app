@@ -17,8 +17,15 @@
     type="text"
     id="cuisine"
     name="cuisine"
-    required
     value="<%= restaurant?.cuisine || '' %>"
+  /><br /><br />
+
+  <label for="location">Location:</label><br />
+  <input
+    type="text"
+    id="location"
+    name="location"
+    value="<%= restaurant?.location || '' %>"
   /><br /><br />
 
   <label for="rating">Rating (1–5):</label><br />
@@ -29,7 +36,7 @@
     min="1"
     max="5"
     required
-    value="<%= restaurant?.rating || '' %>"
+    value="<%= restaurant?.ratings?.[0]?.stars || '' %>"
   /><br /><br />
 
   <label for="imageUrl">Image URL:</label><br />
@@ -47,10 +54,12 @@
     name="review"
     rows="4"
     required
-  ><%= restaurant?.review || '' %></textarea><br /><br />
+  ><%= restaurant?.ratings?.[0]?.comment || '' %></textarea><br /><br />
 
   <button type="submit"><%= buttonLabel %></button>
 </form>
+
+
 
 
 
