@@ -15,7 +15,7 @@ const passUserToView = require('./middleware/pass-user-to-view');
 // =================== Routes ===================
 const authController = require('./controllers/auth');
 const usersController = require('./controllers/users');
-const restaurantRoutes = require('./routes/restaurants'); // Import restaurant routes
+const restaurantRoutes = require('./routes/restaurants'); 
 
 // =================== App Configuration ===================
 const app = express();
@@ -75,7 +75,7 @@ app.use('/auth', authController);
 app.use('/users', usersController);
 
 // Restaurant routes mounted under /users, routes file handles :userId
-app.use('/users', restaurantRoutes);
+app.use('/users/:userId/restaurant', restaurantRoutes);
 
 // 404 catch-all
 app.use((req, res) => {

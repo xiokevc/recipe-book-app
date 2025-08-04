@@ -1,9 +1,7 @@
-const express = require('express');
-const router = express.Router({ mergeParams: true });
 const User = require('../models/user');
 const Restaurant = require('../models/restaurant');
 
-// Middleware: Verify user matches the userId in URL
+// Middleware for access control
 function verifyUserAccess(req, res, next) {
   if (req.session.user && req.session.user._id.toString() === req.params.userId) {
     return next();
@@ -11,45 +9,40 @@ function verifyUserAccess(req, res, next) {
   return res.status(403).send('Unauthorized');
 }
 
-// ========== INDEX (list all restaurants for user) ==========
-router.get('/', verifyUserAccess, async (req, res) => {
+// INDEX – List all restaurants for the user
+async function index(req, res) {
   try {
-    const user = await User.findById(req.params.userId);
-    if (!user) return res.status(404).send('User not found');
-
-    // Find restaurants owned by user
     const restaurants = await Restaurant.find({ user: req.params.userId });
-
-    return res.render('restaurants/index', {
+    res.render('restaurants/index', {
+      user: req.session.user,
       userId: req.params.userId,
       restaurants,
-      user: req.session.user,
     });
   } catch (err) {
     console.error('Error loading restaurants:', err);
-    return res.status(500).send('Server error');
+    res.status(500).send('Server error');
   }
-});
+}
 
-// ========== NEW FORM ==========
-router.get('/new', verifyUserAccess, (req, res) => {
-  return res.render('restaurants/new', {
-    userId: req.params.userId,
+// NEW – Show form to add a new restaurant
+function newForm(req, res) {
+  res.render('restaurants/new', {
     user: req.session.user,
+    userId: req.params.userId,
   });
-});
+}
 
-// ========== CREATE ==========
-router.post('/', verifyUserAccess, async (req, res) => {
+// CREATE – Create a new restaurant
+async function create(req, res) {
   try {
     const user = await User.findById(req.params.userId);
     if (!user) return res.status(404).send('User not found');
 
     const { name, cuisine, location, rating, review, imageUrl } = req.body;
-
     const ratingNum = Number(rating);
+
     if (isNaN(ratingNum) || ratingNum < 1 || ratingNum > 5) {
-      return res.status(400).send('Invalid rating. Must be a number between 1 and 5.');
+      return res.status(400).send('Rating must be a number between 1 and 5');
     }
 
     const restaurant = new Restaurant({
@@ -58,65 +51,76 @@ router.post('/', verifyUserAccess, async (req, res) => {
       location: location?.trim(),
       imageUrl: imageUrl?.trim() || '',
       ratings: [{ user: user._id, stars: ratingNum, comment: review?.trim() || '' }],
-      user: user._id
+      user: user._id,
     });
 
     restaurant.calculateAverageRating();
-
     await restaurant.save();
 
-    return res.redirect(`/users/${user._id}/restaurant`);
+    res.redirect(`/users/${user._id}/restaurant`);
   } catch (err) {
     console.error('Error creating restaurant:', err);
-    return res.status(500).send('Server error');
+    res.status(500).send('Server error');
   }
-});
+}
 
-// ========== SHOW ==========
-router.get('/:restaurantId', verifyUserAccess, async (req, res) => {
+// SHOW – Show a single restaurant
+async function show(req, res) {
   try {
-    const restaurant = await Restaurant.findOne({ _id: req.params.restaurantId, user: req.params.userId });
+    const restaurant = await Restaurant.findOne({
+      _id: req.params.restaurantId,
+      user: req.params.userId,
+    });
+
     if (!restaurant) return res.status(404).send('Restaurant not found');
 
-    return res.render('restaurants/show', {
+    res.render('restaurants/show', {
       restaurant,
-      userId: req.params.userId,
       user: req.session.user,
+      userId: req.params.userId,
     });
   } catch (err) {
     console.error('Error loading restaurant:', err);
-    return res.status(500).send('Server error');
+    res.status(500).send('Server error');
   }
-});
+}
 
-// ========== EDIT FORM ==========
-router.get('/:restaurantId/edit', verifyUserAccess, async (req, res) => {
+// EDIT – Show edit form
+async function editForm(req, res) {
   try {
-    const restaurant = await Restaurant.findOne({ _id: req.params.restaurantId, user: req.params.userId });
+    const restaurant = await Restaurant.findOne({
+      _id: req.params.restaurantId,
+      user: req.params.userId,
+    });
+
     if (!restaurant) return res.status(404).send('Restaurant not found');
 
-    return res.render('restaurants/edit', {
+    res.render('restaurants/edit', {
       restaurant,
-      userId: req.params.userId,
       user: req.session.user,
+      userId: req.params.userId,
     });
   } catch (err) {
     console.error('Error loading edit form:', err);
-    return res.status(500).send('Server error');
+    res.status(500).send('Server error');
   }
-});
+}
 
-// ========== UPDATE ==========
-router.put('/:restaurantId', verifyUserAccess, async (req, res) => {
+// UPDATE – Update a restaurant
+async function update(req, res) {
   try {
-    const restaurant = await Restaurant.findOne({ _id: req.params.restaurantId, user: req.params.userId });
+    const restaurant = await Restaurant.findOne({
+      _id: req.params.restaurantId,
+      user: req.params.userId,
+    });
+
     if (!restaurant) return res.status(404).send('Restaurant not found');
 
     const { name, cuisine, location, rating, review, imageUrl } = req.body;
-
     const ratingNum = Number(rating);
+
     if (isNaN(ratingNum) || ratingNum < 1 || ratingNum > 5) {
-      return res.status(400).send('Invalid rating. Must be a number between 1 and 5.');
+      return res.status(400).send('Rating must be between 1 and 5');
     }
 
     restaurant.name = name?.trim();
@@ -124,49 +128,59 @@ router.put('/:restaurantId', verifyUserAccess, async (req, res) => {
     restaurant.location = location?.trim();
     restaurant.imageUrl = imageUrl?.trim() || '';
 
-    // Check if user already rated this restaurant
     const userIdStr = req.session.user._id.toString();
     const existingRatingIndex = restaurant.ratings.findIndex(r => r.user.toString() === userIdStr);
 
     if (existingRatingIndex >= 0) {
-      // Update existing rating
       restaurant.ratings[existingRatingIndex].stars = ratingNum;
       restaurant.ratings[existingRatingIndex].comment = review?.trim() || '';
       restaurant.ratings[existingRatingIndex].updatedAt = new Date();
     } else {
-      // Add new rating
       restaurant.ratings.push({
         user: req.session.user._id,
         stars: ratingNum,
-        comment: review?.trim() || ''
+        comment: review?.trim() || '',
       });
     }
 
     restaurant.calculateAverageRating();
-
     await restaurant.save();
 
-    return res.redirect(`/users/${req.params.userId}/restaurant`);
+    res.redirect(`/users/${req.params.userId}/restaurant`);
   } catch (err) {
     console.error('Error updating restaurant:', err);
-    return res.status(500).send('Server error');
+    res.status(500).send('Server error');
   }
-});
+}
 
-// ========== DELETE ==========
-router.delete('/:restaurantId', verifyUserAccess, async (req, res) => {
+// DELETE – Delete a restaurant
+async function remove(req, res) {
   try {
-    const restaurant = await Restaurant.findOneAndDelete({ _id: req.params.restaurantId, user: req.params.userId });
+    const restaurant = await Restaurant.findOneAndDelete({
+      _id: req.params.restaurantId,
+      user: req.params.userId,
+    });
+
     if (!restaurant) return res.status(404).send('Restaurant not found');
 
-    return res.redirect(`/users/${req.params.userId}/restaurant`);
+    res.redirect(`/users/${req.params.userId}/restaurant`);
   } catch (err) {
     console.error('Error deleting restaurant:', err);
-    return res.status(500).send('Server error');
+    res.status(500).send('Server error');
   }
-});
+}
 
-module.exports = router;
+module.exports = {
+  verifyUserAccess,
+  index,
+  newForm,
+  create,
+  show,
+  editForm,
+  update,
+  remove,
+};
+
 
 
 
