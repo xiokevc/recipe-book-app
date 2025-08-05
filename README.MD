@@ -1,6 +1,6 @@
 # 🍴 Fork It - A Restaurant Rating App
 
-A full-stack app that lets users create posts to rate and review restaurants! Users can sign up, log in, browse restaurants, add their own, and leave ratings. 
+A full-stack app that lets users create posts to rate and review restaurants! Users can sign up, log in, browse restaurants, add their own review, and leave ratings. 
 
 ---
 
@@ -12,7 +12,7 @@ A full-stack app that lets users create posts to rate and review restaurants! Us
 
 ## Logo
 
-![Fork It screenshot](/assets/forkit.png)
+![Fork It Logo](/assets/forkit.png)
 
 ---
 
@@ -40,7 +40,7 @@ A full-stack app that lets users create posts to rate and review restaurants! Us
 
 - GIF background by Giphy
 - Fonts from Google Fonts
-- Goodgle images
+- Google images
 - [expressjs](https://expressjs.com/en/advanced/best-practice-security.html?utm.com)
 - [studyraid](https://app.studyraid.com/en/read/12376/399613/essential-configuration-options?.com)
 
