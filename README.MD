@@ -1,22 +1,22 @@
-# 🍴 Fork It - Restaurant Rating App
+# 🍴 Fork It - A Restaurant Rating App
 
 A full-stack app that lets users create posts to rate and review restaurants! Users can sign up, log in, browse restaurants, add their own, and leave ratings. 
 
 ---
 
-## 🌐 Live App
+## Live App Link
 
 🔗 [Deployed App on Render](https://restaurant-rating-de6c8b0d53f5.herokuapp.com/)
 
 ---
 
-## 📸 Screenshot
+## Logo
 
 ![Fork It screenshot](/assets/forkit.png)
 
 ---
 
-## 🛠️ Technologies Used
+## Technologies Used
 
 - Node.js
 - Express
@@ -25,17 +25,18 @@ A full-stack app that lets users create posts to rate and review restaurants! Us
 - CSS Flexbox
 - Express-session
 - Adobe Photoshop
+- Heroku
 
 ---
 
-## 🧠 Planning Docs
+## Planning Docs
 
 - [Trello board](https://trello.com/b/pKiDnZ83/my-trello-board)
 - [Wireframes](https://trello.com/b/pKiDnZ83/my-trello-board)
 
 ---
 
-## 🙏 Attributions
+## Attributions
 
 - GIF background by Giphy
 - Fonts from Google Fonts
@@ -45,7 +46,7 @@ A full-stack app that lets users create posts to rate and review restaurants! Us
 
 ---
 
-## 📈 Next Steps
+## What's next?!
 
 - Add favorite restaurants list per user  
 - Add Google Maps integration for restaurant locations  
