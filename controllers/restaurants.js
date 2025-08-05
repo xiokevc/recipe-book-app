@@ -58,7 +58,7 @@ async function create(req, res) {
         stars: ratingNum,
         comment: review?.trim() || ''
       }],
-      user: user._id,  // IMPORTANT: associate user here
+      user: user._id,  
     });
 
     restaurant.calculateAverageRating();

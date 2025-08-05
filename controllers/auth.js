@@ -3,7 +3,7 @@ const router = express.Router();
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
 
-// ========== SIGN-UP (Register) ==========
+// SIGN-UP (Register)
 
 // GET /auth/sign-up
 router.get('/sign-up', (req, res) => {
@@ -54,7 +54,7 @@ router.post('/sign-up', async (req, res) => {
   }
 });
 
-// ========== SIGN-IN (Login) ==========
+// SIGN-IN (Login) 
 
 // GET /auth/sign-in
 router.get('/sign-in', (req, res) => {
@@ -100,7 +100,7 @@ router.post('/sign-in', async (req, res) => {
   }
 });
 
-// ========== SIGN-OUT ==========
+// SIGN-OUT 
 
 // GET /auth/sign-out
 router.get('/sign-out', (req, res) => {

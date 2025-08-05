@@ -1,14 +1,14 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-// ========== Rating Schema ==========
+// Rating Schema
 const ratingSchema = new Schema({
   user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   stars: { type: Number, min: 1, max: 5, required: true },
   comment: { type: String, trim: true },
 }, { timestamps: true });
 
-// ========== Restaurant Schema ==========
+// Restaurant Schema
 const restaurantSchema = new Schema({
   user: { type: Schema.Types.ObjectId, ref: 'User', required: true },  // <-- Add user ref here
   name: {
@@ -49,7 +49,7 @@ const restaurantSchema = new Schema({
   },
 }, { timestamps: true });
 
-// ========== Instance Method ==========
+// Instance Method
 restaurantSchema.methods.calculateAverageRating = function () {
   if (this.ratings.length === 0) {
     this.averageRating = 0;

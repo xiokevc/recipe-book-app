@@ -1,27 +1,27 @@
-// =================== Load Environment Variables ===================
+// Load Environment Variables
 require('dotenv').config();
 
-// =================== Dependencies ===================
+// Dependencies
 const express = require('express');
 const mongoose = require('mongoose');
 const methodOverride = require('method-override');
 const session = require('express-session');
 const path = require('path');
 
-// =================== Middleware ===================
+// Middleware
 const isSignedIn = require('./middleware/is-signed-in');
 const passUserToView = require('./middleware/pass-user-to-view');
 
-// =================== Routes ===================
+// Routes
 const authController = require('./controllers/auth');
 const usersController = require('./controllers/users');
 const restaurantRoutes = require('./routes/restaurants');
 
-// =================== App Configuration ===================
+// App Configuration
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// =================== Database Connection ===================
+// Database Connection
 mongoose.connect(process.env.MONGODB_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -35,7 +35,7 @@ mongoose.connection.on('error', (err) => {
   console.error(`❌ MongoDB connection error:\n${err}`);
 });
 
-// =================== Express Middleware ===================
+// Express Middleware
 
 // Heroku uses a proxy (e.g., for SSL), so trust it
 app.set('trust proxy', 1); 
@@ -67,11 +67,11 @@ app.use(session({
 // Custom middleware: Pass session user to all views
 app.use(passUserToView);
 
-// =================== View Engine ===================
+// View Engine 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-// =================== Routes ===================
+//  Routes 
 
 // Home Page
 app.get('/', (req, res) => {
@@ -92,7 +92,7 @@ app.use((req, res) => {
   res.status(404).render('404', { user: req.session.user });
 });
 
-// =================== Start Server ===================
+// Start Server
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
