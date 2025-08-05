@@ -12,7 +12,7 @@ A full-stack app that lets users rate and review restaurants! Users can sign up,
 
 ## 📸 Screenshot
 
-![Fork It screenshot](public/assets/forkit.png)
+![Fork It screenshot](/assets/forkit.png)
 
 ---
 
