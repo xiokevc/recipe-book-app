@@ -39,8 +39,9 @@ A full-stack app that lets users create posts to rate and review restaurants! Us
 
 - GIF background by Giphy
 - Fonts from Google Fonts
-- https://expressjs.com/en/advanced/best-practice-security.html?utm.com
-- https://app.studyraid.com/en/read/12376/399613/essential-configuration-options?.com
+- Goodgle images
+- [expressjs](https://expressjs.com/en/advanced/best-practice-security.html?utm.com)
+- [studyraid](https://app.studyraid.com/en/read/12376/399613/essential-configuration-options?.com)
 
 ---
 
@@ -49,8 +50,12 @@ A full-stack app that lets users create posts to rate and review restaurants! Us
 - Add favorite restaurants list per user  
 - Add Google Maps integration for restaurant locations  
 - Allow image uploads with Cloudinary  
-- Add pagination or filtering
+- Add filtering and search bar
 - User community integration
+- Make the site mobile friendly
+- Add function to automatically resize text within a "card"
+- Add section on restaruant index to show comments
+- Add recipe integration/ html
 
 
 
